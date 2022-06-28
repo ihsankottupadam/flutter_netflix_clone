@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:netflix/widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,12 +12,26 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double scrollOffset = 0;
   ScrollController scrollController = ScrollController();
+  bool showTopMenu = true;
   @override
   void initState() {
     scrollController.addListener(() {
       setState(() {
         scrollOffset = scrollController.offset;
       });
+      if (scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          showTopMenu) {
+        setState(() {
+          showTopMenu = false;
+        });
+      } else if (scrollController.position.userScrollDirection ==
+              ScrollDirection.forward &&
+          !showTopMenu) {
+        setState(() {
+          showTopMenu = true;
+        });
+      }
     });
     super.initState();
   }
@@ -33,80 +48,33 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size(size.width, 50),
-        child: HomeAppbar(scrollOffset: scrollOffset),
+        preferredSize: Size(size.width, 80),
+        child: HomeAppbar(
+          scrollOffset: scrollOffset,
+          showMenu: showTopMenu,
+        ),
       ),
       body: CustomScrollView(
         controller: scrollController,
         slivers: const [
           SliverToBoxAdapter(
-            child: _HeaderView(),
+            child: HeaderView(),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: 1000,
-            ),
-          )
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: ContentList(title: 'Trending Now', contentList: []))),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: ContentList(title: 'Trending Now', contentList: []))),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: NumberdList(
+                      title: 'Top 10 Movies in India Today', contentList: [])))
         ],
       ),
-    );
-  }
-}
-
-class _HeaderView extends StatelessWidget {
-  const _HeaderView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 500,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/banner_dr_strange.webp'),
-                  fit: BoxFit.cover)),
-        ),
-        Container(
-          height: 500,
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.black, Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  stops: [0, 0.2])),
-        ),
-        Positioned(
-            left: 0,
-            right: 0,
-            bottom: 40,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                VerticalIconButton(
-                  icon: Icons.add,
-                  label: 'My List',
-                  onTap: () {},
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.play_arrow),
-                  label: const Text('Play',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
-                  ),
-                ),
-                VerticalIconButton(
-                  icon: Icons.info_outline,
-                  label: 'info',
-                  onTap: () {},
-                )
-              ],
-            ))
-      ],
     );
   }
 }

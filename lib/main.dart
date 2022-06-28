@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/screens/home_screen.dart';
+
+import 'package:netflix/screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Netflix',
       theme: ThemeData(
-          primarySwatch: Colors.red,
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.black,
-          visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const HomeScreen(),
+        primarySwatch: Colors.red,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+      ),
+      home: const MainScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
