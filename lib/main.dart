@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Netflix',
-      theme: ThemeData(brightness: Brightness.light),
+      theme: ThemeData(
+          primarySwatch: Colors.red,
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.black,
+          visualDensity: VisualDensity.adaptivePlatformDensity),
+      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
