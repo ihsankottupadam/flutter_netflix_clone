@@ -10,7 +10,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  List screens = [HomeScreen(), Text('2'), Text('3'), Text('4')];
+  List screens = const [
+    HomeScreen(),
+    UpcomingMoviesScreen(),
+    Text('3'),
+    DownloadsScreen()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,11 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:netflix/screens/details_screen.dart';
+import 'package:netflix/services/movie_service.dart';
 import 'package:netflix/widgets/content_tile.dart';
 
 class ContentList extends StatelessWidget {
-  const ContentList({Key? key, required this.title, required this.contentList})
-      : super(key: key);
+  const ContentList({
+    Key? key,
+    this.movieId = -1,
+    required this.title,
+  }) : super(key: key);
   final String title;
-  final List contentList;
+  final int movieId;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,16 +26,46 @@ class ContentList extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          Container(
+          SizedBox(
             height: 160,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ContentTile();
-              },
-            ),
+            child: FutureBuilder(
+                future: title != 'Similar Movies'
+                    ? MovieService.fetchMovies(type: title)
+                    : MovieService.getSimilarMovies(movieId),
+                builder: (context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Loading Failed',
+                            style: TextStyle(color: Colors.red)));
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  List movies = snapshot.data!;
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: movies.length,
+                    itemBuilder: (context, index) {
+                      Map movie = movies[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailsScreen(movie: movie),
+                              ));
+                        },
+                        child: ContentTile(
+                          posterPath: movie['poster_path'],
+                        ),
+                      );
+                    },
+                  );
+                }),
           )
         ],
       ),

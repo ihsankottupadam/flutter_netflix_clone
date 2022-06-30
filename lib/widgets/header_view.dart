@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/services/movie_service.dart';
 import 'package:netflix/widgets/vertical_icon_button.dart';
 
 class HeaderView extends StatelessWidget {
@@ -8,13 +9,32 @@ class HeaderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          height: 500,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/banner_dr_strange.webp'),
-                  fit: BoxFit.cover)),
-        ),
+        FutureBuilder(
+            future: MovieService.fetchMovies(type: 'Trending Now'),
+            builder: (context, AsyncSnapshot<List> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(child: Text('Loading Failed'));
+              }
+              if (!snapshot.hasData) {
+                return const SizedBox(
+                  height: 500,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              final List movies = snapshot.data!;
+              if (movies.isNotEmpty) {
+                final Map movie = movies[0];
+                final String posterPath = movie['poster_path'];
+                var imageURL = 'https://image.tmdb.org/t/p/w500/$posterPath';
+                return Container(
+                  height: 500,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(imageURL), fit: BoxFit.cover)),
+                );
+              }
+              return const SizedBox(height: 500);
+            }),
         Container(
           height: 500,
           decoration: const BoxDecoration(

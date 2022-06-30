@@ -15,24 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showTopMenu = true;
   @override
   void initState() {
-    scrollController.addListener(() {
-      setState(() {
-        scrollOffset = scrollController.offset;
-      });
-      if (scrollController.position.userScrollDirection ==
-              ScrollDirection.reverse &&
-          showTopMenu) {
-        setState(() {
-          showTopMenu = false;
-        });
-      } else if (scrollController.position.userScrollDirection ==
-              ScrollDirection.forward &&
-          !showTopMenu) {
-        setState(() {
-          showTopMenu = true;
-        });
-      }
-    });
+    initScrollController();
     super.initState();
   }
 
@@ -63,18 +46,50 @@ class _HomeScreenState extends State<HomeScreen> {
           SliverToBoxAdapter(
               child: Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: ContentList(title: 'Trending Now', contentList: []))),
-          SliverToBoxAdapter(
-              child: Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: ContentList(title: 'Trending Now', contentList: []))),
+                  child: ContentList(title: 'Trending Now'))),
           SliverToBoxAdapter(
               child: Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: NumberdList(
-                      title: 'Top 10 Movies in India Today', contentList: [])))
+                    title: 'Top 10 Movies in India Today',
+                  ))),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: ContentList(title: 'Top Rated Movies'))),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: ContentList(title: 'Upcoming Movies'))),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: NumberdList(
+                    title: 'Top 10 TV Shows',
+                  ))),
         ],
       ),
     );
+  }
+
+  void initScrollController() {
+    scrollController.addListener(() {
+      setState(() {
+        scrollOffset = scrollController.offset;
+      });
+      if (scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          showTopMenu) {
+        setState(() {
+          showTopMenu = false;
+        });
+      } else if (scrollController.position.userScrollDirection ==
+              ScrollDirection.forward &&
+          !showTopMenu) {
+        setState(() {
+          showTopMenu = true;
+        });
+      }
+    });
   }
 }

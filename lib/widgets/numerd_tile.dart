@@ -5,26 +5,31 @@ class NumberedTile extends StatelessWidget {
   const NumberedTile({
     Key? key,
     required this.index,
+    required this.posterPath,
   }) : super(key: key);
   final int index;
+  final String posterPath;
   @override
   Widget build(BuildContext context) {
+    var imageURL = 'https://image.tmdb.org/t/p/w500/$posterPath';
     return SizedBox(
       width: 130,
       child: Stack(
         children: [
           Positioned(
-              right: 0,
-              child: Container(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/transparent.png',
+                image: imageURL,
                 width: 100,
-                height: 150,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/banner_dr_strange.webp'),
-                      fit: BoxFit.cover,
-                    )),
-              )),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Positioned(
               bottom: -10,
               left: index != 0 ? -5 : 0,
