@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/screens/yt_player.dart';
+import 'package:netflix/services/youtbe_service.dart';
 
 import 'package:netflix/widgets/widgets.dart';
 
@@ -14,7 +16,23 @@ class DetailsScreen extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            MovieThumb(imagePath: backdropPath),
+            GestureDetector(
+                onTap: () async {
+                  String? title = movie['title'];
+                  if (title != null) {
+                    String? id = await YouTubeService.search(movie['title']);
+                    if (id != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => YtPlayer(
+                              videoId: id,
+                            ),
+                          ));
+                    }
+                  }
+                },
+                child: MovieThumb(imagePath: backdropPath)),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
