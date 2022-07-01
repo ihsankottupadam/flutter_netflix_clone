@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:netflix/models/movie.dart';
 import 'package:netflix/widgets/numerd_tile.dart';
 
 import '../screens/details_screen.dart';
@@ -46,7 +47,7 @@ class NumberdList extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: snapshot.hasData ? min(movies.length, 10) : 0,
                     itemBuilder: (context, index) {
-                      Map movie = movies[index];
+                      Movie movie = movies[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -57,7 +58,7 @@ class NumberdList extends StatelessWidget {
                               ));
                         },
                         child: NumberedTile(
-                            index: index, posterPath: movie['poster_path']),
+                            index: index, posterPath: movie.posterPath),
                       );
                     },
                   );

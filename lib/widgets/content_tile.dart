@@ -24,22 +24,3 @@ class ContentTile extends StatelessWidget {
     );
   }
 }
-/* Container(
-        width: 100,
-        height: 50,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            image: DecorationImage(
-                image: NetworkImage(imageURL), fit: BoxFit.cover)),
-      ),*/
-/* @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.asset(
-        'assets/images/banner_dr_strange.webp',
-        width: 100,
-        height: 10,
-      ),
-    );
-  }*/

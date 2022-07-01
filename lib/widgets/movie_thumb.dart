@@ -22,7 +22,7 @@ class MovieThumb extends StatelessWidget {
             return Container(
               width: double.infinity,
               height: 200,
-              color: Colors.grey,
+              color: Colors.grey.shade900,
             );
           },
           width: double.infinity,

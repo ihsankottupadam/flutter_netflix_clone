@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/models/movie.dart';
 import 'package:netflix/screens/details_screen.dart';
 import 'package:netflix/services/movie_service.dart';
 import 'package:netflix/widgets/content_tile.dart';
@@ -49,7 +50,7 @@ class ContentList extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: movies.length,
                     itemBuilder: (context, index) {
-                      Map movie = movies[index];
+                      Movie movie = movies[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -60,7 +61,7 @@ class ContentList extends StatelessWidget {
                               ));
                         },
                         child: ContentTile(
-                          posterPath: movie['poster_path'],
+                          posterPath: movie.posterPath,
                         ),
                       );
                     },

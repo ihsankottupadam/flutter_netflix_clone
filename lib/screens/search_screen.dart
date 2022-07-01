@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:netflix/models/movie.dart';
 import 'package:netflix/screens/screens.dart';
 import 'package:netflix/services/movie_service.dart';
 
@@ -61,7 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       itemCount: movies.length,
                       itemBuilder: (context, index) {
-                        Map movie = movies[index];
+                        Movie movie = movies[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -71,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       DetailsScreen(movie: movie),
                                 ));
                           },
-                          child: SearchTile(movieDetails: movie),
+                          child: SearchTile(movie: movie),
                         );
                       },
                       separatorBuilder: (contxt, index) => const Divider(
@@ -91,9 +92,9 @@ class _SearchScreenState extends State<SearchScreen> {
 class SearchTile extends StatelessWidget {
   const SearchTile({
     Key? key,
-    required this.movieDetails,
+    required this.movie,
   }) : super(key: key);
-  final Map movieDetails;
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,7 +104,7 @@ class SearchTile extends StatelessWidget {
       child: Row(
         children: [
           Image.network(
-            'https://image.tmdb.org/t/p/w500/${movieDetails['backdrop_path']}',
+            'https://image.tmdb.org/t/p/w500/${movie.backdropPath}',
             fit: BoxFit.cover,
             width: 130,
             height: 80,
@@ -118,7 +119,7 @@ class SearchTile extends StatelessWidget {
           const SizedBox(width: 20),
           Expanded(
               child: Text(
-            movieDetails['title'] ?? '',
+            movie.title,
             maxLines: 1,
             style: const TextStyle(
                 fontWeight: FontWeight.bold,

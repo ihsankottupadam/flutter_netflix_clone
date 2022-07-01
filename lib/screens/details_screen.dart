@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/screens/yt_player.dart';
 import 'package:netflix/services/youtbe_service.dart';
+import 'package:netflix/models/movie.dart';
 
 import 'package:netflix/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({Key? key, required this.movie}) : super(key: key);
-  final Map movie;
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
-    final String backdropPath = movie['backdrop_path'] ?? '';
+    final String backdropPath = movie.backdropPath;
 
-    final String? overview = movie['overview'];
+    final String overview = movie.overview;
     return Scaffold(
       body: SafeArea(
         child: ListView(
           children: [
             GestureDetector(
                 onTap: () async {
-                  String? title = movie['title'];
-                  if (title != null) {
-                    String? id = await YouTubeService.search(movie['title']);
+                  String title = movie.title;
+                  if (title.isEmpty) {
+                    String? id = await YouTubeService.search(movie.title);
                     if (id != null) {
                       Navigator.push(
                           context,
@@ -39,17 +40,16 @@ class DetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MovieDetails(
-                    movieDetails: movie,
+                    movie: movie,
                   ),
                   const SizedBox(height: 30),
-                  if (overview != null)
-                    OverviewWidet(
-                      overview: overview,
-                    ),
+                  OverviewWidet(
+                    overview: overview,
+                  ),
                   const SizedBox(height: 30),
                   ContentList(
                     title: 'Similar Movies',
-                    movieId: movie['id'],
+                    movieId: movie.id,
                   )
                 ],
               ),
@@ -91,15 +91,15 @@ class OverviewWidet extends StatelessWidget {
 class MovieDetails extends StatelessWidget {
   const MovieDetails({
     Key? key,
-    required this.movieDetails,
+    required this.movie,
   }) : super(key: key);
-  final Map movieDetails;
+  final Movie movie;
 
   @override
   Widget build(BuildContext context) {
-    final String posterPath = movieDetails['poster_path'];
-    num rating = movieDetails['vote_average'];
-    String? releaseDate = movieDetails['release_date'];
+    final String posterPath = movie.posterPath;
+    num rating = movie.voteAverage;
+    String? releaseDate = movie.releaseDate;
     return Row(
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -111,7 +111,7 @@ class MovieDetails extends StatelessWidget {
               Row(children: [
                 Expanded(
                   child: Text(
-                    movieDetails['title'] ?? '',
+                    movie.title,
                     maxLines: 1,
                     style: const TextStyle(
                       fontSize: 18,
@@ -129,7 +129,7 @@ class MovieDetails extends StatelessWidget {
                 ),
               const SizedBox(height: 5),
               if (releaseDate != null)
-                Text('Release Date : $releaseDate',
+                Text('Release Date : ${releaseDate.replaceAll('-', '/')}',
                     style: const TextStyle(color: Colors.white, fontSize: 15))
             ],
           ),
