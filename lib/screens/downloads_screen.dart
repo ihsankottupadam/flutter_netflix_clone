@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:netflix/models/movie.dart';
 import 'package:netflix/services/movie_service.dart';
 import 'search_screen.dart';
 
@@ -117,13 +118,13 @@ class DownloadsImageCards extends StatelessWidget {
               alignment: Alignment.center,
               child: FutureBuilder(
                 future: MovieService.fetchMovies(type: 'Now Playing'),
-                builder: (context, AsyncSnapshot<List> snapshot) {
+                builder: (context, AsyncSnapshot<List<Movie>> snapshot) {
                   if (!snapshot.hasData) {
                     return const SizedBox();
                   } else if (snapshot.data!.isEmpty) {
                     return const SizedBox();
                   }
-                  final List movies = snapshot.data!;
+                  final List<Movie> movies = snapshot.data!;
                   return SizedBox(
                     width: double.infinity,
                     child: Stack(
@@ -132,15 +133,15 @@ class DownloadsImageCards extends StatelessWidget {
                         MoviePoster(
                             margin: const EdgeInsets.only(right: 160),
                             angle: -20,
-                            posterpath: movies[1]['poster_path']),
+                            posterpath: movies[1].posterPath),
                         MoviePoster(
                             margin: const EdgeInsets.only(left: 160),
                             angle: 20,
-                            posterpath: movies[2]['poster_path']),
+                            posterpath: movies[2].posterPath),
                         MoviePoster(
                             margin: EdgeInsets.zero,
                             angle: 0,
-                            posterpath: movies[0]['poster_path'],
+                            posterpath: movies[0].posterPath,
                             height: 160),
                       ],
                     ),

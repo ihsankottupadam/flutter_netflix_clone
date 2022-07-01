@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/models/movie.dart';
 import 'package:netflix/screens/details_screen.dart';
 
 import 'package:netflix/services/movie_service.dart';
@@ -30,7 +31,7 @@ class UpcomingMoviesScreen extends StatelessWidget {
           return ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
-              Map movie = movies[index];
+              Movie movie = movies[index];
               return InkWell(
                 onTap: () {
                   Navigator.push(
@@ -53,19 +54,18 @@ class UpcomingMoviesScreen extends StatelessWidget {
 
 class UpcomingTile extends StatelessWidget {
   const UpcomingTile({Key? key, required this.movieDetails}) : super(key: key);
-  final Map movieDetails;
+  final Movie movieDetails;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MovieThumb(
-            imagePath: movieDetails['backdrop_path'], showGradient: false),
+        MovieThumb(imagePath: movieDetails.backdropPath, showGradient: false),
         Padding(
           padding: const EdgeInsets.all(25.0),
           child: Row(children: [
             Expanded(
               child: Text(
-                movieDetails['title'] ?? '',
+                movieDetails.title,
                 maxLines: 1,
                 style: const TextStyle(
                   fontSize: 18,
@@ -87,7 +87,7 @@ class UpcomingTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Text(
-            movieDetails['overview'] ?? '',
+            movieDetails.overview,
             maxLines: 4,
             style: const TextStyle(
                 fontSize: 15,
