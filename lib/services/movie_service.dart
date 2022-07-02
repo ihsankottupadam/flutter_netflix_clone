@@ -6,7 +6,6 @@ import 'package:netflix/models/movie.dart';
 
 class MovieService {
   static Future<List<Movie>> fetchMovies({required String type}) async {
-    List<Movie> moviesList = [];
     final String? endpoint = TMDB.endPoints[type];
     if (endpoint == null) {
       return [];
@@ -29,7 +28,6 @@ class MovieService {
   }
 
   static Future<List> getSimilarMovies(int movieId) async {
-    List<Movie> moviesList = [];
     final String uriString =
         '${TMDB.baseUrl}/movie/$movieId/similar?api_key=${ApiKey.apiKey}';
 
@@ -48,7 +46,6 @@ class MovieService {
   }
 
   static Future<List> searchMovies(String query) async {
-    List<Movie> moviesList = [];
     final String uriString =
         '${TMDB.baseUrl}/search/movie?api_key=${ApiKey.apiKey}&query="$query"';
     try {

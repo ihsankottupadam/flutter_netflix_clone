@@ -1,63 +1,149 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/screens/yt_player.dart';
+
 import 'package:netflix/services/youtbe_service.dart';
 import 'package:netflix/models/movie.dart';
 
 import 'package:netflix/widgets/widgets.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class DetailsScreen extends StatelessWidget {
+class DetailsScreen extends StatefulWidget {
   const DetailsScreen({Key? key, required this.movie}) : super(key: key);
   final Movie movie;
+
+  @override
+  State<DetailsScreen> createState() => _DetailsScreenState();
+}
+
+class _DetailsScreenState extends State<DetailsScreen> {
+  late YoutubePlayerController _controller;
+  int stackIndex = 0;
+  String videoId = '';
+  String sp = 'TYMMOjBUPMM';
+  String? posterPath;
+  // bool isPlayerMuted = false;
+  @override
+  void initState() {
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        loop: false,
+        mute: false,
+        enableCaption: false,
+      ),
+    )..setVolume(100);
+
+    super.initState();
+  }
+
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String backdropPath = movie.backdropPath;
-
-    final String overview = movie.overview;
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
-            GestureDetector(
-                onTap: () async {
-                  String title = movie.title;
-                  if (title.isEmpty) {
-                    String? id = await YouTubeService.search(movie.title);
-                    if (id != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => YtPlayer(
-                              videoId: id,
-                            ),
-                          ));
-                    }
-                  }
+    final String backdropPath = widget.movie.backdropPath;
+    final String overview = widget.movie.overview;
+    return YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          thumbnail: Image.network(
+            'https://image.tmdb.org/t/p/w500/$backdropPath',
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          progressColors: const ProgressBarColors(
+              playedColor: Colors.red,
+              handleColor: Colors.red,
+              backgroundColor: Color(0x44ffffff)),
+          progressIndicatorColor: Colors.red,
+          topActions: [
+            const Spacer(),
+            // IconButton(
+            //     onPressed: () {
+            //       if (!isPlayerMuted) {
+            //         _controller.mute();
+            //       } else {
+            //         _controller.unMute();
+            //       }
+            //       setState(() {
+            //         isPlayerMuted = !isPlayerMuted;
+            //       });
+            //     },
+            //     icon: Icon(isPlayerMuted ? Icons.volume_off : Icons.volume_up)),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _controller.pause();
+                    stackIndex = 0;
+                  });
                 },
-                child: MovieThumb(imagePath: backdropPath)),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
+                icon: const Icon(Icons.close))
+          ],
+        ),
+        builder: (context, player) {
+          return Scaffold(
+            body: SafeArea(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MovieDetails(
-                    movie: movie,
+                  GestureDetector(
+                      onTap: () async {
+                        String title = widget.movie.title;
+                        if (title.isNotEmpty) {
+                          final String? id =
+                              await YouTubeService.search(widget.movie.title);
+                          if (id != null) {
+                            setState(() {
+                              _controller.load(id);
+
+                              stackIndex = 1;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Loading Failed')));
+                          }
+                        }
+                      },
+                      child: IndexedStack(
+                        index: stackIndex,
+                        children: [MovieThumb(imagePath: backdropPath), player],
+                      )),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MovieDetails(
+                            movie: widget.movie,
+                          ),
+                          const SizedBox(height: 30),
+                          OverviewWidet(
+                            overview: overview,
+                          ),
+                          const SizedBox(height: 30),
+                          ContentList(
+                            title: 'Similar Movies',
+                            movieId: widget.movie.id,
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 30),
-                  OverviewWidet(
-                    overview: overview,
-                  ),
-                  const SizedBox(height: 30),
-                  ContentList(
-                    title: 'Similar Movies',
-                    movieId: movie.id,
-                  )
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 

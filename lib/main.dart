@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:netflix/screens/main_screen.dart';
+import 'package:netflix/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: const MainScreen(),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

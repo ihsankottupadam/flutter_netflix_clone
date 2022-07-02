@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/models/movie.dart';
+import 'package:netflix/screens/details_screen.dart';
 import 'package:netflix/services/movie_service.dart';
 import 'package:netflix/widgets/vertical_icon_button.dart';
 
@@ -8,6 +9,7 @@ class HeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Movie? cMovie;
     return Stack(
       children: [
         FutureBuilder(
@@ -25,6 +27,7 @@ class HeaderView extends StatelessWidget {
               final List<Movie> movies = snapshot.data!;
               if (movies.isNotEmpty) {
                 final Movie movie = movies[0];
+                cMovie = movie;
                 final String posterPath = movie.posterPath;
                 var imageURL = 'https://image.tmdb.org/t/p/w500/$posterPath';
                 return Container(
@@ -63,7 +66,15 @@ class HeaderView extends StatelessWidget {
                   onTap: () {},
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (cMovie != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsScreen(movie: cMovie!),
+                          ));
+                    }
+                  },
                   icon: const Icon(Icons.play_arrow),
                   label: const Text('Play',
                       style:

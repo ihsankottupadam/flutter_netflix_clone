@@ -23,6 +23,7 @@ class NumberedTile extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: FadeInImage.assetNetwork(
+                fadeInDuration: const Duration(milliseconds: 200),
                 placeholder: 'assets/images/transparent.png',
                 image: imageURL,
                 width: 100,

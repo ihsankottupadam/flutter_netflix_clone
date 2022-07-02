@@ -50,6 +50,6 @@ class _YtPlayerState extends State<YtPlayer> {
           ],
         ),
         builder: (context, player) =>
-            AspectRatio(aspectRatio: 1 / 1, child: player));
+            AspectRatio(aspectRatio: 9 / 16, child: player));
   }
 }
