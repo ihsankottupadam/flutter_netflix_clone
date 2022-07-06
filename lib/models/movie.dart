@@ -1,12 +1,17 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+
+part 'movie.g.dart';
+
 List<Movie> moviesFromJson(String str) =>
     List<Movie>.from(json.decode(str).map((x) => Movie.fromJson(x)));
 
 String moviesToJson(List<Movie> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Movie {
+@HiveType(typeId: 0)
+class Movie extends HiveObject {
   Movie({
     required this.adult,
     required this.backdropPath,
@@ -23,20 +28,33 @@ class Movie {
     required this.voteAverage,
     required this.voteCount,
   });
-
+  @HiveField(0)
   final bool? adult;
+  @HiveField(1)
   final String backdropPath;
+  @HiveField(2)
   final List<int> genreIds;
+  @HiveField(3)
   final int id;
+  @HiveField(4)
   final String? originalLanguage;
+  @HiveField(5)
   final String originalTitle;
+  @HiveField(6)
   final String overview;
+  @HiveField(7)
   final double? popularity;
+  @HiveField(8)
   final String posterPath;
+  @HiveField(9)
   final String? releaseDate;
+  @HiveField(10)
   final String title;
+  @HiveField(11)
   final bool video;
+  @HiveField(12)
   final double voteAverage;
+  @HiveField(13)
   final int voteCount;
 
   factory Movie.fromJson(Map<String, dynamic> json) => Movie(

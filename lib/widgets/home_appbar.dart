@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix/screens/search_screen.dart';
+import 'package:netflix/screens/watchlist_screen.dart';
 
 class HomeAppbar extends StatelessWidget {
   const HomeAppbar({Key? key, this.scrollOffset = 0.0, required this.showMenu})
@@ -43,15 +44,20 @@ class HomeAppbar extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SearchScreen(),
-                                      ));
+                                          builder: (context) =>
+                                              const SearchScreen()));
                                 },
                                 icon: const Icon(CupertinoIcons.search),
                                 tooltip: 'Search',
                               ),
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const WatchListScreen()));
+                                },
                                 icon: Container(
                                     width: 24,
                                     height: 24,

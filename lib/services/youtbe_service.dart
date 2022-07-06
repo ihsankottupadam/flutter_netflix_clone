@@ -5,9 +5,12 @@ import 'package:netflix/constants/apikey.dart';
 import 'package:netflix/models/yt_search.dart';
 
 class YouTubeService {
+  static bool isFirstKey = false;
   static Future<String?> search(String query) async {
+    isFirstKey = !isFirstKey;
+    final String apiKey = isFirstKey ? ApiKey.ytApikey1 : ApiKey.ytApikey2;
     final String uriString =
-        'https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=$query official trailer&type=video&key=${ApiKey.ytApikey}';
+        'https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=$query official trailer&type=video&key=$apiKey';
     try {
       var response = await Dio().get(uriString);
       if (response.statusCode == 200) {

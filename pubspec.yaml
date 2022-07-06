@@ -47,6 +47,8 @@ dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -62,6 +64,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+dev_dependencies: {build_runner: ^2.1.11, hive_generator: ^1.1.3}
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:netflix/models/watchlist.dart';
 
 import 'package:netflix/services/youtbe_service.dart';
 import 'package:netflix/models/movie.dart';
+import 'package:netflix/util.dart';
 
 import 'package:netflix/widgets/widgets.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -20,6 +23,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   String videoId = '';
   String sp = 'TYMMOjBUPMM';
   String? posterPath;
+  //bool isPlayerReady = false;
   // bool isPlayerMuted = false;
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   void deactivate() {
+    print('deactivated ......');
     _controller.pause();
     super.deactivate();
   }
@@ -55,6 +60,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return YoutubePlayerBuilder(
         player: YoutubePlayer(
           controller: _controller,
+          onReady: () {
+            // isPlayerReady = true;
+            if (videoId.isNotEmpty) {
+              _controller.load(videoId);
+            }
+          },
           thumbnail: Image.network(
             'https://image.tmdb.org/t/p/w500/$backdropPath',
             width: double.infinity,
@@ -96,21 +107,41 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 children: [
                   GestureDetector(
                       onTap: () async {
+                        final String title = widget.movie.title;
+                        if (title.isEmpty) {
+                          Util.showSnackbar(context, 'No video found');
+                          return;
+                        }
+                        if (videoId.isEmpty) {
+                          final String? id = await YouTubeService.search(title);
+                          if (id != null) {
+                            videoId = id;
+                          } else {
+                            Util.showSnackbar(context, 'Video loading failed');
+                            return;
+                          }
+                        }
+                        _controller.load(videoId);
+                        setState(() {
+                          stackIndex = 1;
+                        });
+                      },
+                      onLongPress: () async {
                         String title = widget.movie.title;
                         if (title.isNotEmpty) {
                           final String? id =
                               await YouTubeService.search(widget.movie.title);
                           if (id != null) {
+                            videoId = id;
+                            _controller.load(videoId);
                             setState(() {
-                              _controller.load(id);
-
                               stackIndex = 1;
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Loading Failed')));
+                            Util.showSnackbar(context, 'Video Loading Failed');
                           }
+                        } else {
+                          Util.showSnackbar(context, 'No video found');
                         }
                       },
                       child: IndexedStack(
@@ -123,6 +154,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          VideoActionsBar(movie: widget.movie),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           MovieDetails(
                             movie: widget.movie,
                           ),
@@ -144,6 +179,62 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
           );
         });
+  }
+}
+
+class VideoActionsBar extends StatefulWidget {
+  const VideoActionsBar({
+    Key? key,
+    required this.movie,
+  }) : super(key: key);
+  final Movie movie;
+
+  @override
+  State<VideoActionsBar> createState() => _VideoActionsBarState();
+}
+
+class _VideoActionsBarState extends State<VideoActionsBar> {
+  bool isinWathlist = false;
+  @override
+  void initState() {
+    isinWathlist = WatchList.contains(widget.movie);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        VerticalIconButton(
+          icon: Icons.copy,
+          label: 'Copy Title',
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: widget.movie.title));
+            Util.showSnackbar(context, 'Copied to Clipboard');
+          },
+          fontSize: 10,
+          iconSize: 18,
+          padding: const EdgeInsets.all(15),
+        ),
+        VerticalIconButton(
+            icon: isinWathlist ? Icons.bookmark : Icons.bookmark_border,
+            label: 'Watchlist',
+            fontSize: 10,
+            iconSize: 18,
+            padding: const EdgeInsets.all(15),
+            onTap: () {
+              if (isinWathlist) {
+                WatchList.remove(widget.movie);
+              } else {
+                WatchList.add(widget.movie);
+              }
+              setState(() {
+                isinWathlist = !isinWathlist;
+              });
+            })
+      ],
+    );
   }
 }
 
